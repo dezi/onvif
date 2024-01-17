@@ -3,6 +3,7 @@ package onvif
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -11,13 +12,16 @@ import (
 	"strings"
 
 	"github.com/beevik/etree"
+	"github.com/liesa-care/project.go.liesa.main/goodies/smart/xmlpretty"
 	"github.com/use-go/onvif/device"
 	"github.com/use-go/onvif/gosoap"
 	"github.com/use-go/onvif/networking"
 	wsdiscovery "github.com/use-go/onvif/ws-discovery"
 )
 
-//Xlmns XML Scheam
+const debug = true
+
+// Xlmns XML Scheam
 var Xlmns = map[string]string{
 	"onvif":   "http://www.onvif.org/ver10/schema",
 	"tds":     "http://www.onvif.org/ver10/device/wsdl",
@@ -36,7 +40,7 @@ var Xlmns = map[string]string{
 	"wsaw":    "http://www.w3.org/2006/05/addressing/wsdl",
 }
 
-//DeviceType alias for int
+// DeviceType alias for int
 type DeviceType int
 
 // Onvif Device Tyoe
@@ -63,7 +67,7 @@ func (devType DeviceType) String() string {
 	}
 }
 
-//DeviceInfo struct contains general information about ONVIF device
+// DeviceInfo struct contains general information about ONVIF device
 type DeviceInfo struct {
 	Manufacturer    string
 	Model           string
@@ -72,9 +76,9 @@ type DeviceInfo struct {
 	HardwareId      string
 }
 
-//Device for a new device of onvif and DeviceInfo
-//struct represents an abstract ONVIF device.
-//It contains methods, which helps to communicate with ONVIF device
+// Device for a new device of onvif and DeviceInfo
+// struct represents an abstract ONVIF device.
+// It contains methods, which helps to communicate with ONVIF device
 type Device struct {
 	params    DeviceParams
 	endpoints map[string]string
@@ -88,12 +92,12 @@ type DeviceParams struct {
 	HttpClient *http.Client
 }
 
-//GetServices return available endpoints
+// GetServices return available endpoints
 func (dev *Device) GetServices() map[string]string {
 	return dev.endpoints
 }
 
-//GetServices return available endpoints
+// GetServices return available endpoints
 func (dev *Device) GetDeviceInfo() DeviceInfo {
 	return dev.info
 }
@@ -106,7 +110,7 @@ func readResponse(resp *http.Response) string {
 	return string(b)
 }
 
-//GetAvailableDevicesAtSpecificEthernetInterface ...
+// GetAvailableDevicesAtSpecificEthernetInterface ...
 func GetAvailableDevicesAtSpecificEthernetInterface(interfaceName string) ([]Device, error) {
 	// Call a ws-discovery Probe Message to Discover NVT type Devices
 	devices, err := wsdiscovery.SendProbe(interfaceName, nil, []string{"dn:" + NVT.String()}, map[string]string{"dn": "http://www.onvif.org/ver10/network/wsdl"})
@@ -168,7 +172,7 @@ func (dev *Device) getSupportedServices(resp *http.Response) error {
 	return nil
 }
 
-//NewDevice function construct a ONVIF Device entity
+// NewDevice function construct a ONVIF Device entity
 func NewDevice(params DeviceParams) (*Device, error) {
 	dev := new(Device)
 	dev.params = params
@@ -209,12 +213,12 @@ func (dev *Device) addEndpoint(Key, Value string) {
 	dev.endpoints[lowCaseKey] = Value
 }
 
-//GetEndpoint returns specific ONVIF service endpoint address
+// GetEndpoint returns specific ONVIF service endpoint address
 func (dev *Device) GetEndpoint(name string) string {
 	return dev.endpoints[name]
 }
 
-func (dev Device) buildMethodSOAP(msg string) (gosoap.SoapMessage, error) {
+func (dev *Device) buildMethodSOAP(msg string) (gosoap.SoapMessage, error) {
 	doc := etree.NewDocument()
 	if err := doc.ReadFromString(msg); err != nil {
 		//log.Println("Got error")
@@ -229,8 +233,8 @@ func (dev Device) buildMethodSOAP(msg string) (gosoap.SoapMessage, error) {
 	return soap, nil
 }
 
-//getEndpoint functions get the target service endpoint in a better way
-func (dev Device) getEndpoint(endpoint string) (string, error) {
+// getEndpoint functions get the target service endpoint in a better way
+func (dev *Device) getEndpoint(endpoint string) (string, error) {
 
 	// common condition, endpointMark in map we use this.
 	if endpointURL, bFound := dev.endpoints[endpoint]; bFound {
@@ -250,9 +254,9 @@ func (dev Device) getEndpoint(endpoint string) (string, error) {
 	return endpointURL, errors.New("target endpoint service not found")
 }
 
-//CallMethod functions call an method, defined <method> struct.
-//You should use Authenticate method to call authorized requests.
-func (dev Device) CallMethod(method interface{}) (*http.Response, error) {
+// CallMethod functions call an method, defined <method> struct.
+// You should use Authenticate method to call authorized requests.
+func (dev *Device) CallMethod(method interface{}) (*http.Response, error) {
 	pkgPath := strings.Split(reflect.TypeOf(method).PkgPath(), "/")
 	pkg := strings.ToLower(pkgPath[len(pkgPath)-1])
 
@@ -263,8 +267,8 @@ func (dev Device) CallMethod(method interface{}) (*http.Response, error) {
 	return dev.callMethodDo(endpoint, method)
 }
 
-//CallMethod functions call an method, defined <method> struct with authentication data
-func (dev Device) callMethodDo(endpoint string, method interface{}) (*http.Response, error) {
+// CallMethod functions call an method, defined <method> struct with authentication data
+func (dev *Device) callMethodDo(endpoint string, method interface{}) (*http.Response, error) {
 	output, err := xml.MarshalIndent(method, "  ", "    ")
 	if err != nil {
 		return nil, err
@@ -281,6 +285,11 @@ func (dev Device) callMethodDo(endpoint string, method interface{}) (*http.Respo
 	//Auth Handling
 	if dev.params.Username != "" && dev.params.Password != "" {
 		soap.AddWSSecurity(dev.params.Username, dev.params.Password)
+	}
+
+	if debug {
+		pretty := xmlpretty.FormatXMLDezi(soap.String())
+		fmt.Printf("<<<<<<<<<<<<<<<<\n%s\n----------------\n", pretty)
 	}
 
 	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())

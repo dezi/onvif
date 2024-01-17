@@ -3,12 +3,14 @@ package sdk
 import (
 	"context"
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/juju/errors"
+	"github.com/liesa-care/project.go.liesa.main/goodies/smart/xmlpretty"
 	"github.com/rs/zerolog"
 )
 
@@ -22,6 +24,8 @@ var (
 	// Logger is a zerolog logger, that can be safely used from any part of the application.
 	// It gathers the format and the output.
 	Logger = LoggerContext.Logger()
+
+	debug = true
 )
 
 func ReadAndParse(ctx context.Context, httpReply *http.Response, reply interface{}, tag string) error {
@@ -37,6 +41,11 @@ func ReadAndParse(ctx context.Context, httpReply *http.Response, reply interface
 	}
 
 	httpReply.Body.Close()
+
+	if debug {
+		pretty := xmlpretty.FormatXMLDezi(string(b))
+		fmt.Printf(">>>>>>>>>>>>>>>>\n%s\n----------------\n", pretty)
+	}
 
 	err = xml.Unmarshal(b, reply)
 	return errors.Annotate(err, "decode")
