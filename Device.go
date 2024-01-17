@@ -16,10 +16,11 @@ import (
 	"github.com/use-go/onvif/device"
 	"github.com/use-go/onvif/gosoap"
 	"github.com/use-go/onvif/networking"
+	"github.com/use-go/onvif/sdk"
 	wsdiscovery "github.com/use-go/onvif/ws-discovery"
 )
 
-const debug = true
+var debug = false
 
 // Xlmns XML Scheam
 var Xlmns = map[string]string{
@@ -90,6 +91,11 @@ type DeviceParams struct {
 	Username   string
 	Password   string
 	HttpClient *http.Client
+}
+
+func (dev *Device) SetDebug(dbg bool) {
+	debug = dbg
+	sdk.SetDebug(dbg)
 }
 
 func (dev *Device) SetUser(username, password string) {
@@ -295,6 +301,7 @@ func (dev *Device) callMethodDo(endpoint string, method interface{}) (*http.Resp
 	if debug {
 		pretty := xmlpretty.FormatXMLDezi(soap.String())
 		fmt.Printf("<<<<<<<<<<<<<<<<\n%s\n----------------\n", pretty)
+		debug = false
 	}
 
 	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())

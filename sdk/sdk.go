@@ -14,6 +14,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
+var debug = false
+
 var (
 	// LoggerContext is the builder of a zerolog.Logger that is exposed to the application so that
 	// options at the CLI might alter the formatting and the output of the logs.
@@ -24,16 +26,22 @@ var (
 	// Logger is a zerolog logger, that can be safely used from any part of the application.
 	// It gathers the format and the output.
 	Logger = LoggerContext.Logger()
-
-	debug = true
 )
 
+func SetDebug(dgb bool) {
+	debug = dgb
+}
+
 func ReadAndParse(ctx context.Context, httpReply *http.Response, reply interface{}, tag string) error {
-	Logger.Debug().
-		Str("msg", httpReply.Status).
-		Int("status", httpReply.StatusCode).
-		Str("action", tag).
-		Msg("RPC")
+
+	if debug {
+		Logger.Debug().
+			Str("msg", httpReply.Status).
+			Int("status", httpReply.StatusCode).
+			Str("action", tag).
+			Msg("RPC")
+	}
+
 	// TODO(jfsmig): extract the deadline from ctx.Deadline() and apply it on the reply reading
 	b, err := ioutil.ReadAll(httpReply.Body)
 	if err != nil {
@@ -45,6 +53,7 @@ func ReadAndParse(ctx context.Context, httpReply *http.Response, reply interface
 	if debug {
 		pretty := xmlpretty.FormatXMLDezi(string(b))
 		fmt.Printf(">>>>>>>>>>>>>>>>\n%s\n----------------\n", pretty)
+		debug = false
 	}
 
 	err = xml.Unmarshal(b, reply)
