@@ -92,6 +92,11 @@ type DeviceParams struct {
 	HttpClient *http.Client
 }
 
+func (dev *Device) SetUser(username, password string) {
+	dev.params.Username = username
+	dev.params.Password = password
+}
+
 // GetServices return available endpoints
 func (dev *Device) GetServices() map[string]string {
 	return dev.endpoints
