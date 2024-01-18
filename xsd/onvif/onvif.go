@@ -548,8 +548,8 @@ type PTZConfiguration struct {
 }
 
 type PTZSpeed struct {
-	PanTilt Vector2D `xml:"PanTilt"`
-	Zoom    Vector1D `xml:"Zoom"`
+	PanTilt Vector2D `xml:"onvif:PanTilt"`
+	Zoom    Vector1D `xml:"onvif:Zoom"`
 }
 
 type Vector2D struct {
