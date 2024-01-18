@@ -280,6 +280,7 @@ func (dev *Device) CallMethod(method interface{}) (*http.Response, error) {
 
 // CallMethod functions call an method, defined <method> struct with authentication data
 func (dev *Device) callMethodDo(endpoint string, method interface{}) (*http.Response, error) {
+
 	output, err := xml.MarshalIndent(method, "  ", "    ")
 	if err != nil {
 		return nil, err
