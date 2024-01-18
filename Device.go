@@ -98,7 +98,7 @@ func (dev *Device) SetDebug(dbg bool) {
 	sdk.SetDebug(dbg)
 }
 
-func (dev *Device) SetUser(username, password string) {
+func (dev *Device) SetCredentials(username, password string) {
 	dev.params.Username = username
 	dev.params.Password = password
 }

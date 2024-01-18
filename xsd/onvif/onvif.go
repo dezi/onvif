@@ -808,15 +808,15 @@ type G726DecOptions struct {
 type AudioDecoderConfigurationOptionsExtension xsd.AnyType
 
 type StreamSetup struct {
-	Stream    StreamType `xml:"Stream"`
-	Transport Transport  `xml:"Transport"`
+	Stream    StreamType `xml:"onvif:Stream"`
+	Transport Transport  `xml:"onvif:Transport"`
 }
 
 type StreamType xsd.String
 
 type Transport struct {
-	Protocol TransportProtocol `xml:"Protocol"`
-	Tunnel   *Transport        `xml:"Tunnel"`
+	Protocol TransportProtocol `xml:"onvif:Protocol"`
+	Tunnel   *Transport        `xml:"onvif:Tunnel"`
 }
 
 // enum
