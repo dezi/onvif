@@ -680,7 +680,7 @@ type GetOSDs struct {
 }
 
 type GetOSDsResponse struct {
-	OSDs onvif.OSDConfiguration
+	OSDs []onvif.OSDConfiguration
 }
 
 type GetOSD struct {
