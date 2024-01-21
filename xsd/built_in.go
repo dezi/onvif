@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/IOTechSystems/onvif/xsd"
 	"github.com/use-go/onvif/xsd/iso8601"
 )
 
@@ -230,14 +229,14 @@ TODO: process restrictions
 */
 type DateTime struct {
 	Time struct {
-		Hour   xsd.Int
-		Minute xsd.Int
-		Second xsd.Int
+		Hour   Int
+		Minute Int
+		Second Int
 	}
 	Date struct {
-		Year  xsd.Int
-		Month xsd.Int
-		Day   xsd.Int
+		Year  Int
+		Month Int
+		Day   Int
 	}
 }
 
