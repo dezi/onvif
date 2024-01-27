@@ -224,6 +224,8 @@ func (dev *Device) addEndpoint(Key, Value string) {
 		Value = u.String()
 	}
 
+	fmt.Printf("############ endpoint key=%s addr=%s", lowCaseKey, Value)
+
 	dev.endpoints[lowCaseKey] = Value
 }
 
