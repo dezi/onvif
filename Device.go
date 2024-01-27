@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/beevik/etree"
 	"github.com/liesa-care/project.go.liesa.main/goodies/smart/xmlpretty"
@@ -191,7 +192,9 @@ func NewDevice(params DeviceParams) (*Device, error) {
 	dev.addEndpoint("Device", "http://"+dev.params.Xaddr+"/onvif/device_service")
 
 	if dev.params.HttpClient == nil {
-		dev.params.HttpClient = new(http.Client)
+		dev.params.HttpClient = &http.Client{
+			Timeout: time.Second * 3,
+		}
 	}
 
 	getCapabilities := device.GetCapabilities{Category: "All"}
