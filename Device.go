@@ -193,7 +193,7 @@ func NewDevice(params DeviceParams) (*Device, error) {
 
 	if dev.params.HttpClient == nil {
 		dev.params.HttpClient = &http.Client{
-			Timeout: time.Second * 5,
+			Timeout: time.Second * 10,
 		}
 	}
 
