@@ -304,7 +304,7 @@ func (dev *Device) callMethodDo(endpoint string, method interface{}) (*http.Resp
 
 	if debug {
 		pretty := xmlpretty.FormatXMLDezi(soap.String())
-		fmt.Printf("<<<<<<<<<<<<<<<<\n%s\n----------------\n", pretty)
+		fmt.Printf("<<<<<<<<<<<<<<<<\n%s\n%s\n----------------\n", endpoint, pretty)
 		debug = false
 	}
 
