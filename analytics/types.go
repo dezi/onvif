@@ -50,7 +50,7 @@ type GetSupportedAnalyticsModules struct {
 
 type GetAnalyticsModuleOptions struct {
 	XMLName            string               `xml:"tan:GetAnalyticsModuleOptions"`
-	Type               xsd.QName            `xml:"tan:Type"`
+	Type               xsd.QName            `xml:"tan:Kind"`
 	ConfigurationToken onvif.ReferenceToken `xml:"tan:ConfigurationToken"`
 }
 

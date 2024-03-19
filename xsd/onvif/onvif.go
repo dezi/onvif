@@ -60,7 +60,7 @@ type FloatRange struct {
 type OSDConfiguration struct {
 	DeviceEntity                  `xml:"token,attr"`
 	VideoSourceConfigurationToken OSDReference              `xml:"VideoSourceConfigurationToken"`
-	Type                          OSDType                   `xml:"Type"`
+	Type                          OSDType                   `xml:"Kind"`
 	Position                      OSDPosConfiguration       `xml:"Position"`
 	TextString                    OSDTextConfiguration      `xml:"TextString"`
 	Image                         OSDImgConfiguration       `xml:"Image"`
@@ -70,7 +70,7 @@ type OSDConfiguration struct {
 type OSDType xsd.String
 
 type OSDPosConfiguration struct {
-	Type      string                       `xml:"Type"`
+	Type      string                       `xml:"Kind"`
 	Pos       Vector                       `xml:"Pos"`
 	Extension OSDPosConfigurationExtension `xml:"Extension"`
 }
@@ -87,7 +87,7 @@ type OSDReference ReferenceToken
 type OSDTextConfiguration struct {
 	IsPersistentText xsd.Boolean `xml:"IsPersistentText,attr"`
 
-	Type            xsd.String                    `xml:"Type"`
+	Type            xsd.String                    `xml:"Kind"`
 	DateFormat      xsd.String                    `xml:"DateFormat"`
 	TimeFormat      xsd.String                    `xml:"TimeFormat"`
 	FontSize        xsd.Int                       `xml:"FontSize"`
@@ -461,7 +461,7 @@ type MulticastConfiguration struct {
 }
 
 type IPAddress struct {
-	Type        IPType      `xml:"Type"`
+	Type        IPType      `xml:"Kind"`
 	IPv4Address IPv4Address `xml:"IPv4Address"`
 	IPv6Address IPv6Address `xml:"IPv6Address"`
 }
@@ -498,7 +498,7 @@ type AnalyticsEngineConfiguration struct {
 
 type Config struct {
 	Name       string    `xml:"Name,attr"`
-	Type       xsd.QName `xml:"Type,attr"`
+	Type       xsd.QName `xml:"Kind,attr"`
 	Parameters ItemList  `xml:"Parameters"`
 }
 
@@ -1183,7 +1183,7 @@ type ScopeDefinition xsd.String
 type DiscoveryMode xsd.String
 
 type NetworkHost struct {
-	Type        NetworkHostType      `xml:"Type"`
+	Type        NetworkHostType      `xml:"Kind"`
 	IPv4Address IPv4Address          `xml:"IPv4Address"`
 	IPv6Address IPv6Address          `xml:"IPv6Address"`
 	DNSname     DNSName              `xml:"DNSname"`
@@ -1655,7 +1655,7 @@ type NetworkZeroConfigurationExtension struct {
 type NetworkZeroConfigurationExtension2 xsd.AnyType
 
 type IPAddressFilter struct {
-	Type        IPAddressFilterType      `xml:"Type"`
+	Type        IPAddressFilterType      `xml:"Kind"`
 	IPv4Address PrefixedIPv4Address      `xml:"IPv4Address,omitempty"`
 	IPv6Address PrefixedIPv6Address      `xml:"IPv6Address,omitempty"`
 	Extension   IPAddressFilterExtension `xml:"Extension,omitempty"`

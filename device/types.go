@@ -438,7 +438,7 @@ type GetDynamicDNSResponse struct {
 
 type SetDynamicDNS struct {
 	XMLName string               `xml:"tds:SetDynamicDNS"`
-	Type    onvif.DynamicDNSType `xml:"tds:Type"`
+	Type    onvif.DynamicDNSType `xml:"tds:Kind"`
 	Name    onvif.DNSName        `xml:"tds:Name"`
 	TTL     xsd.Duration         `xml:"tds:TTL"`
 }
